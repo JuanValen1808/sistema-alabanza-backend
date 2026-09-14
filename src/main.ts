@@ -9,7 +9,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:5173', // Tu frontend local de desarrollo
-      // 'https://tu-frontend.vercel.app' // Aquí pondrás la URL de Vercel cuando lo subas
+      'https://sistema-alabanza-frontend.vercel.app/' // Aquí pondrás la URL de Vercel cuando lo subas
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
