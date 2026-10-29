@@ -1,6 +1,7 @@
 // src/app.module.ts
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SongsModule } from './songs/songs.module.js';
 import { UsersModule } from './users/users.module.js';
@@ -13,17 +14,19 @@ import { AuthModule } from './auth/auth.module.js';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ScheduleModule.forRoot(),
+    // Si existe DATABASE_URL (Coolify) se usa; si no, las variables DB_* (local)
     TypeOrmModule.forRoot({
-      type: 'mysql',
+      type: 'postgres',
+      url: process.env.DATABASE_URL,
       host: process.env.DB_HOST || 'localhost',
-      port: parseInt(process.env.DB_PORT || '3306', 10),
-      username: process.env.DB_USER || 'root',
+      port: parseInt(process.env.DB_PORT || '5432', 10),
+      username: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASSWORD || '',
       database: process.env.DB_NAME || 'sistema_alabanza',
       autoLoadEntities: true,
       synchronize: false,
     }),
-    // ¡Faltaban registrarse aquí! 👇
     SongsModule,
     UsersModule,
     RolesModule,

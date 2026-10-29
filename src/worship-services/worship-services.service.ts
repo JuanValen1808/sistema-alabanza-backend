@@ -1,20 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Repository } from 'typeorm';
 import { WorshipService } from './worship-services.entity.js';
-
-const scheduleModule = (() => {
-  try {
-    return require('@nestjs/schedule');
-  } catch {
-    return null;
-  }
-})();
-
-const Cron = scheduleModule?.Cron ?? ((..._args: any[]) => (_target: any, _key?: string, descriptor?: PropertyDescriptor) => descriptor ?? _target);
-const CronExpression = scheduleModule?.CronExpression ?? {
-  EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT: '0 0 1 * *',
-};
 
 @Injectable()
 export class WorshipServicesService {
@@ -90,7 +78,7 @@ async findNearest(): Promise<WorshipService | null> {
   }
 
   // Se ejecuta automáticamente el primer día de cada mes a las 00:00 AM
-  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
+  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT, { timeZone: 'America/Santiago' })
   async generateMonthlyServices() {
     this.logger.log('Generando cultos automáticos para el mes actual...');
     const now = new Date();

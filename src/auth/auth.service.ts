@@ -11,7 +11,7 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-async register(dto: { name?: string; email: string; password: string; confirmPassword: string; role?: string }) {
+async register(dto: { name?: string; email: string; password: string; confirmPassword: string }) {
     if (dto.password !== dto.confirmPassword) {
       throw new BadRequestException('Las contraseñas no coinciden');
     }
@@ -23,8 +23,9 @@ async register(dto: { name?: string; email: string; password: string; confirmPas
 
     const passwordHash = await bcrypt.hash(dto.password, 10);
 
-    // Si mandan 'admin' asignamos rol 1, de lo contrario rol 2 (por ejemplo)
-    const assignedRoleId = dto.role === 'admin' ? 1 : 2;
+    // El registro público siempre crea usuarios estándar (rol 2).
+    // Los admin se asignan directamente en la base de datos.
+    const assignedRoleId = 2;
 
     const newUser = this.userRepository.create({
       name: dto.name || dto.email.split('@')[0],
